@@ -1,36 +1,65 @@
+from random import randint
+
 import nltk
 
+class Text:
+
+    def __init__(self, text):
+        tokens = nltk.wordpunct_tokenize(text)
+        self.tagged_tokens = nltk.pos_tag(tokens)
+        self.replacements = {}
+
+    def get_tokens(self):
+        return [Token(token, tag) for (token, tag) in self.tagged_tokens]
+
+    def replace(self, index, word):
+        self.replacements[index] = word
+
+    def compile(self):
+        tokens = [token for (token, tag) in self.tagged_tokens]
+        for index in self.replacements.keys():
+            word = self.replacements[index]
+            tokens[index] = word
+        return str.join(" ", tokens)
+
+
+class Token:
+
+    def __init__(self, token, tag):
+        self.token = token
+        self.tag = tag
+
+    def is_noun(self):
+        return self.is_singular_noun() or self.is_plural_noun()
+
+    def is_singular_noun(self):
+        return self.tag == "NN"
+
+    def is_plural_noun(self):
+        return self.tag == "NNS"
+
+
 def buttify(message):
-    output = ""
-    words = nltk.word_tokenize(message)
-    for word in words:
-        if is_plural_noun(word):
-            output += "butts"
-        elif is_singular_noun(word):
-            output += "butt"
+    text = Text(message)
+    index_to_replace = None
+    plural = None
+    n_nouns = 0
+    for index, token in enumerate(text.get_tokens()):
+        if token.is_noun():
+            i = randint(0, n_nouns)
+            if i == 0:
+                index_to_replace = index
+                plural = token.is_plural_noun()
+            n_nouns += 1
+
+    if index_to_replace is not None:
+        if plural:
+            text.replace(index_to_replace, "butts")
         else:
-            output += word
+            text.replace(index_to_replace, "butt")
 
-        output += " "
-
-    return output
-
-
-def is_plural_noun(word):
-    tag = get_parts_of_speech_tag(word)
-    return tag == "NNS"
-
-
-def is_singular_noun(word):
-    tag = get_parts_of_speech_tag(word)
-    return tag == "NN"
-
-
-def get_parts_of_speech_tag(word):
-    tagged_words = nltk.pos_tag([word])
-    _, tag = tagged_words[0]
-    return tag
+    return text.compile()
 
 
 if __name__ == "__main__":
-    print(buttify("I am losing my freaking mind"))
+    print(buttify("Anyone who has lost track of time when using a computer knows the propensity to dream, the urge to make dreams come true and the tendency to miss lunch."))
