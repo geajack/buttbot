@@ -1,3 +1,5 @@
+from random import random
+
 import discord
 
 import config
@@ -14,5 +16,10 @@ class ButtBot(discord.Client):
         if message.author == self.user:
             return
 
-        response = butt.buttify(message.content)
-        await message.channel.send(response)
+        if self.should_buttify():
+            response = butt.buttify(message.content)
+            await message.channel.send(response)
+
+    def should_buttify(self):
+        chance_to_butt = config.get_chance_to_butt()
+        return random() <= chance_to_butt

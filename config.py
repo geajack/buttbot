@@ -17,6 +17,10 @@ def is_channel_authorized(server_id, channel_id):
                     return True
     return False
 
+def get_chance_to_butt():
+    config = get_config()
+    return config.get("chance_to_butt", 0.5)
+
 def get_config():
     CONFIG_PATH = get_application_root() / "config.yaml"
     with open(CONFIG_PATH, "r") as config_file:
