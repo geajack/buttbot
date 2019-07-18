@@ -17,7 +17,7 @@ class ButtBot(discord.Client):
             return
 
         if self.should_buttify():
-            response = butt.buttify(message.content)
+            response = butt.buttify(message.clean_content)
             await message.channel.send(response)
 
     def should_buttify(self):
