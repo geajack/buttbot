@@ -22,7 +22,9 @@ def buttify(message):
         else:
             text.replace(index_to_replace, "butt")
 
-    return text.compile()
+    buttified = index_to_replace is not None
+
+    return text.compile(), buttified
 
 
 if __name__ == "__main__":

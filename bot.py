@@ -17,8 +17,9 @@ class ButtBot(discord.Client):
             return
 
         if self.should_buttify(message.clean_content):
-            response = butt.buttify(message.clean_content)
-            await message.channel.send(response)
+            response, buttified = butt.buttify(message.clean_content)
+            if buttified:
+                await message.channel.send(response)
 
     def should_buttify(self, message):
         if config.contains_keyword(message):
