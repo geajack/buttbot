@@ -16,10 +16,13 @@ class ButtBot(discord.Client):
         if message.author == self.user:
             return
 
-        if self.should_buttify():
+        if self.should_buttify(message.clean_content):
             response = butt.buttify(message.clean_content)
             await message.channel.send(response)
 
-    def should_buttify(self):
+    def should_buttify(self, message):
+        if config.contains_keyword(message):
+            return True
+
         chance_to_butt = config.get_chance_to_butt()
         return random() <= chance_to_butt
