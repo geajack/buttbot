@@ -22,7 +22,14 @@ class Text:
                 output += " "
 
             if index in self.replacements:
-                output += self.replacements[index]
+                new_word = self.replacements[index]
+
+                if token.is_uppercase():
+                    new_word = new_word.upper()
+                elif token.is_capitalized():
+                    new_word = new_word[0].upper() + new_word[1:]
+
+                output += new_word
             else:
                 output += token.token
         return output.strip()
@@ -45,3 +52,9 @@ class Token:
 
     def is_plural_noun(self):
         return self.tag == "NNS"
+
+    def is_uppercase(self):
+        return self.token.isupper()
+
+    def is_capitalized(self):
+        return self.token[0].isupper()
